@@ -115,6 +115,17 @@ SELECT R.nom_ruta, COUNT(PXR.id_parada) AS cantidad_paradas
 FROM `Ruta` R
 INNER JOIN `ParadaXruta` PXR ON R.id_ruta = PXR.id_ruta
 GROUP BY R.nom_ruta;
+RESULTADO
++---------------+------------------+
+| nom_ruta      | cantidad_paradas |
++---------------+------------------+
+| Universidades |                7 |
+| Cacique       |                5 |
+| Diamantes     |                3 |
+| Terminal      |                2 |
+| Ciudadela     |                3 |
++---------------+------------------+
+
 ~~~
 #### 2.Nombre de las Paradas de la Ruta Universidades
 ~~~sql
@@ -123,6 +134,18 @@ FROM `Parada` P
 INNER JOIN `ParadaXruta` PXR ON PXR.id_parada = P.id_parada 
 INNER JOIN `Ruta` R ON R.id_ruta = PXR.id_ruta
 WHERE R.nom_ruta = 'Universidades';
+RESULTADO
++-----------------------+
+| paradas_universidades |
++-----------------------+
+| Colseguros            |
+| Clínica Chicamocha    |
+| Plaza Guarín          |
+| Mega Mall             |
+| UIS                   |
+| UDI                   |
+| Santo Tomás           |
++-----------------------+
 ~~~
 #### 3.Nombres de las Rutas No Programadas
 ~~~sql
@@ -130,6 +153,18 @@ SELECT R.nom_ruta AS ruta_no_programada
 FROM `Ruta` R
 LEFT JOIN `Recorridos` RE ON RE.id_ruta = R.id_ruta
 WHERE RE.id_ruta IS NULL;
+RESULTADO
++--------------------+
+| ruta_no_programada |
++--------------------+
+| Cacique            |
+| Prado              |
+| Cabecera           |
+| Ciudadela          |
+| Punta Estrella     |
+| Centro Florida     |
++--------------------+
+
 ~~~
 #### 4.Rutas Programadas sin Conductor Asignado
 ~~~sql
@@ -137,6 +172,17 @@ SELECT R.nom_ruta AS ruta_sin_conductor
 FROM `Ruta` R
 LEFT JOIN `Recorridos` RE ON RE.id_ruta = R.id_ruta
 WHERE RE.id_conductor IS NULL;
+RESULTADO
++--------------------+
+| ruta_sin_conductor |
++--------------------+
+| Cacique            |
+| Prado              |
+| Cabecera           |
+| Ciudadela          |
+| Punta Estrella     |
+| Centro Florida     |
++--------------------+
 ~~~
 #### 5.Conductores No Asignados a la Programación, que no estan planeados para salir en una ruta
 ~~~sql
@@ -144,6 +190,16 @@ SELECT C.nom_conductor AS Conductores_No_Asignados
 FROM `Conductor` C
 LEFT JOIN `Recorridos` R ON R.id_conductor = C.id_conductor
 WHERE R.id_conductor IS NULL;
+RESULTADO
++-------------------------------+
+| Conductores_No_Asignados      |
++-------------------------------+
+| Andrés Manuel López Obrador   |
+| Nicolás Maduro Moros          |
+| Luiz Inácio Lula da Silva     |
+| Gustavo Petro Urrego          |
+| Luis Arce                     |
++-------------------------------+
 ~~~
 #### 6.Buses No asignados a la Programación
 ~~~sql
@@ -151,20 +207,70 @@ SELECT B.id_bus, B.placa
 FROM `Buses` B
 LEFT JOIN `Recorridos` R ON R.id_bus = B.id_bus
 WHERE R.id_bus IS NULL;
+RESULTADO
++--------+--------+
+| id_bus | placa  |
++--------+--------+
+|      2 | XDL965 |
+|      8 | XXL757 |
++--------+--------+
 ~~~
 #### 7.Zonas NO Programadas
 ~~~sql
 SELECT Z.id_zona, Z.nom_zona AS zona_no_programada
 FROM `Zona` Z
 LEFT JOIN `Ruta` R ON R.id_zona = Z.id_zona
-WHERE R.id_zona IS NULL
+WHERE R.id_zona IS NULL;
+RESULTADO
++---------+--------------------+
+| id_zona | zona_no_programada |
++---------+--------------------+
+|       2 | Sur                |
+|       3 | Oriente            |
+|       6 | Girón              |
+|       7 | Piedecuesta        |
++---------+--------------------+
 ~~~
 #### 8.Programación asignada a cada conductor (Conductor, Ruta y Día)
 ~~~sql
 SELECT C.nom_conductor, R.dia, RU.nom_ruta
 FROM `Conductor` C
 INNER JOIN `Recorridos` R ON R.id_conductor = C.id_conductor
-INNER JOIN `Ruta` RU ON RU.id_ruta = R.id_ruta
+INNER JOIN `Ruta` RU ON RU.id_ruta = R.id_ruta;
+RESULTADO
++--------------------+------------+---------------+
+| nom_conductor      | dia        | nom_ruta      |
++--------------------+------------+---------------+
+| Gabriel Boric      | Lunes      | Universidades |
+| Gabriel Boric      | Martes     | Universidades |
+| Gabriel Boric      | Miércoles  | Universidades |
+| Gabriel Boric      | Jueves     | Universidades |
+| Gabriel Boric      | Viernes    | Café Madrid   |
+| Gabriel Boric      | Sábado     | Café Madrid   |
+| Gabriel Boric      | Domingo    | Café Madrid   |
+| Alberto Fernández  | Lunes      | Diamantes     |
+| Alberto Fernández  | Martes     | Diamantes     |
+| Alberto Fernández  | Miércoles  | Diamantes     |
+| Alberto Fernández  | Jueves     | Terminal      |
+| Alberto Fernández  | Viernes    | Terminal      |
+| Alberto Fernández  | Sábado     | Terminal      |
+| Alberto Fernández  | Domingo    | Terminal      |
+| Xiomara Castro     | Lunes      | Niza          |
+| Xiomara Castro     | Martes     | Niza          |
+| Xiomara Castro     | Miércoles  | Niza          |
+| Xiomara Castro     | Jueves     | Niza          |
+| Xiomara Castro     | Viernes    | Niza          |
+| Xiomara Castro     | Sábado     | Autopista     |
+| Xiomara Castro     | Domingo    | Autopista     |
+| Daniel Ortega      | Lunes      | Autopista     |
+| Daniel Ortega      | Martes     | Autopista     |
+| Miguel Díaz-Canel  | Miércoles  | Lagos         |
+| Miguel Díaz-Canel  | Jueves     | Lagos         |
+| Miguel Díaz-Canel  | Viernes    | Lagos         |
+| Miguel Díaz-Canel  | Sábado     | Lagos         |
+| Miguel Díaz-Canel  | Domingo    | Lagos         |
++--------------------+------------+---------------+
+
 ~~~
 #### 9.Programación asignada a conductores que hacen rutas de más de dos horas
 ~~~sql
@@ -173,6 +279,28 @@ FROM `Conductor` C
 INNER JOIN `Recorridos` R ON R.id_conductor = C.id_conductor
 INNER JOIN `Ruta` RU ON RU.id_ruta = R.id_ruta
 WHERE TIME_TO_SEC(RU.tiempo_ruta) > TIME_TO_SEC('02:00:00');
+RESULTADO
++--------------------+------------+--------------+
+| nom_conductor      | dia        | nom_ruta     |
++--------------------+------------+--------------+
+| Gabriel Boric      | Viernes    | Café Madrid  |
+| Gabriel Boric      | Sábado     | Café Madrid  |
+| Gabriel Boric      | Domingo    | Café Madrid  |
+| Xiomara Castro     | Lunes      | Niza         |
+| Xiomara Castro     | Martes     | Niza         |
+| Xiomara Castro     | Miércoles  | Niza         |
+| Xiomara Castro     | Jueves     | Niza         |
+| Xiomara Castro     | Viernes    | Niza         |
+| Xiomara Castro     | Sábado     | Autopista    |
+| Xiomara Castro     | Domingo    | Autopista    |
+| Daniel Ortega      | Lunes      | Autopista    |
+| Daniel Ortega      | Martes     | Autopista    |
+| Miguel Díaz-Canel  | Miércoles  | Lagos        |
+| Miguel Díaz-Canel  | Jueves     | Lagos        |
+| Miguel Díaz-Canel  | Viernes    | Lagos        |
+| Miguel Díaz-Canel  | Sábado     | Lagos        |
+| Miguel Díaz-Canel  | Domingo    | Lagos        |
++--------------------+------------+--------------+
 ~~~
 #### 10.Nombres de Zonas y cantidad de rutas que tienen programadas (Contar)
 ~~~sql
@@ -181,5 +309,18 @@ FROM `Zona` Z
 LEFT JOIN `Ruta` R ON R.id_zona = Z.id_zona
 LEFT JOIN `Recorridos` RE ON RE.id_ruta = R.id_ruta
 GROUP BY Z.nom_zona;
+RESULTADO
++---------------+----------------+
+| nom_zona      | cantidad_rutas |
++---------------+----------------+
+| Norte         |              7 |
+| Sur           |              0 |
+| Oriente       |              0 |
+| Occidente     |              7 |
+| Floridablanca |             14 |
+| Girón         |              0 |
+| Piedecuesta   |              0 |
++---------------+----------------+
+
 ~~~
 ***
